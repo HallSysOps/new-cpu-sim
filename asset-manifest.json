@@ -1,15 +1,20 @@
 {
   "files": {
     "main.css": "/new-cpu-sim/static/css/main.f855e6bc.css",
-    "main.js": "/new-cpu-sim/static/js/main.6ede1d6e.js",
+    "main.js": "/new-cpu-sim/static/js/main.e0102e48.js",
+    "static/js/239.0ddb1338.chunk.js": "/new-cpu-sim/static/js/239.0ddb1338.chunk.js",
+    "static/js/977.adc274cb.chunk.js": "/new-cpu-sim/static/js/977.adc274cb.chunk.js",
+    "static/js/732.5207e91c.chunk.js": "/new-cpu-sim/static/js/732.5207e91c.chunk.js",
     "static/js/453.b35d53b2.chunk.js": "/new-cpu-sim/static/js/453.b35d53b2.chunk.js",
     "index.html": "/new-cpu-sim/index.html",
     "main.f855e6bc.css.map": "/new-cpu-sim/static/css/main.f855e6bc.css.map",
-    "main.6ede1d6e.js.map": "/new-cpu-sim/static/js/main.6ede1d6e.js.map",
+    "main.e0102e48.js.map": "/new-cpu-sim/static/js/main.e0102e48.js.map",
+    "239.0ddb1338.chunk.js.map": "/new-cpu-sim/static/js/239.0ddb1338.chunk.js.map",
+    "732.5207e91c.chunk.js.map": "/new-cpu-sim/static/js/732.5207e91c.chunk.js.map",
     "453.b35d53b2.chunk.js.map": "/new-cpu-sim/static/js/453.b35d53b2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.6ede1d6e.js"
+    "static/js/main.e0102e48.js"
   ]
 }
