@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/new-cpu-sim/static/css/main.f855e6bc.css",
-    "main.js": "/new-cpu-sim/static/js/main.02c7c4c4.js",
+    "main.js": "/new-cpu-sim/static/js/main.6ede1d6e.js",
     "static/js/453.b35d53b2.chunk.js": "/new-cpu-sim/static/js/453.b35d53b2.chunk.js",
     "index.html": "/new-cpu-sim/index.html",
     "main.f855e6bc.css.map": "/new-cpu-sim/static/css/main.f855e6bc.css.map",
-    "main.02c7c4c4.js.map": "/new-cpu-sim/static/js/main.02c7c4c4.js.map",
+    "main.6ede1d6e.js.map": "/new-cpu-sim/static/js/main.6ede1d6e.js.map",
     "453.b35d53b2.chunk.js.map": "/new-cpu-sim/static/js/453.b35d53b2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.02c7c4c4.js"
+    "static/js/main.6ede1d6e.js"
   ]
 }
