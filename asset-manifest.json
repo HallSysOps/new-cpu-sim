@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/new-cpu-sim/static/css/main.f855e6bc.css",
+    "main.js": "/new-cpu-sim/static/js/main.60fe54e2.js",
+    "static/js/453.b35d53b2.chunk.js": "/new-cpu-sim/static/js/453.b35d53b2.chunk.js",
+    "static/media/logo.svg": "/new-cpu-sim/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/new-cpu-sim/index.html",
+    "main.f855e6bc.css.map": "/new-cpu-sim/static/css/main.f855e6bc.css.map",
+    "main.60fe54e2.js.map": "/new-cpu-sim/static/js/main.60fe54e2.js.map",
+    "453.b35d53b2.chunk.js.map": "/new-cpu-sim/static/js/453.b35d53b2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.60fe54e2.js"
+  ]
+}
