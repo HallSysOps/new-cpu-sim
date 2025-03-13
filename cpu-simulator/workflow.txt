@@ -1,0 +1,13 @@
+Test Locally:
+	npm start
+
+Stage and Commit Changes:
+	git add .
+	git commit -m "Your commit message"
+	git push origin main
+
+Build Production Version:
+	npm run build
+
+Deploy to GitHub Pages
+	npm run deploy
