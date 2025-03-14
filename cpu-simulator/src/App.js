@@ -3,6 +3,7 @@ import './App.css';
 import Chart from './components/Chart'; // Delete when needed
 import {jsPDF} from "jspdf";
 import { generateProcesses } from './models/Process';
+import BarChart from './components/currentQueue';
 
 
 function App() {
@@ -19,11 +20,16 @@ function App() {
     }
       */
      const [numProcesses, setNumProcesses] = useState(5); // Default 5 processes
-     const [processQueue, setProcessQueue] = useState(null);
+     const [processQueue, setProcessQueue] = useState({
+      labels: [],
+      values: [],
+     });
 
      const handleGenerateProcesses = ()=>{
-      const queue = generateProcesses(Number(numProcesses)); //TODO: Make this take some int from the user
-      setProcessQueue(queue.items);
+      const queue = generateProcesses(Number(numProcesses));
+      const labels = queue.items.map(process => 'PID: ' + process.pid);
+      const values = queue.items.map(process => process.burstTime);
+      setProcessQueue({labels, values});
   };
 
   return (
@@ -40,20 +46,7 @@ function App() {
       
       {/* Button to generate processes */}
       <button onClick={handleGenerateProcesses}>Generate Processes</button>
-
-      {/* Display the generated processes */}
-      {processQueue && (
-        <div>
-          <h2>Generated Processes</h2>
-          <ul>
-            {processQueue.map((process) => (
-                <li key={process.id}>
-                  <strong>Process {process.id}</strong> - Arrival Time: {process.arrivalTime}, Burst Time: {process.burstTime}, Priority: {process.priority}
-                </li>
-              ))}
-          </ul>
-        </div>
-      )}
+      <BarChart data={processQueue}/>
     </div>
   );
 }
