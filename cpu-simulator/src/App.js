@@ -5,6 +5,7 @@ import {jsPDF} from "jspdf";
 import { generateProcesses, Queue } from './models/Process';
 import BarChart from './components/currentQueue';
 import { fifo } from './algorithms/fifo';
+import { sjf } from './algorithms/sjf';
 
 
 function App() {
@@ -33,9 +34,12 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
         setCurrentTime(prevTime => prevTime + 1);
-
-        fifo(processQueue, currentTime); // This automatically updates the chart as well
-
+        // May need to create a queue that drops a process into an algo's queue when currentTime == arrivalTime
+        sjf(processQueue, currentTime); // This automatically updates the chart as well
+        //TODO: Implement other algos and test in here 
+        //TODO: Find out a way to pass functions as an argument to allow a user to pick what algo they want to run
+        //TODO: Implement method to run all functions at the same time
+        //TODO: Allow user to download results as a pdf(?) => get stats of completion, turnaround, etc?
     }, 1000);
 
     return () => clearInterval(interval);
