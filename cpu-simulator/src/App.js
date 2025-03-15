@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 import Chart from './components/Chart'; // Delete when needed
 import {jsPDF} from "jspdf";
-import { generateProcesses } from './models/Process';
+import { generateProcesses, Queue } from './models/Process';
 import BarChart from './components/currentQueue';
+import { fifo } from './algorithms/fifo';
 
 
 function App() {
@@ -19,18 +20,27 @@ function App() {
       doc.save('chart.pdf'); // Save the PDF with the name 'chart.pdf'
     }
       */
+     const [currentTime, setCurrentTime] = useState(0); // Used to track time once processes have been generated
      const [numProcesses, setNumProcesses] = useState(5); // Default 5 processes
-     const [processQueue, setProcessQueue] = useState({
-      pids: [],
-      values: []
-     });
+     const [processQueue, setProcessQueue] = useState(new Queue());
 
      const handleGenerateProcesses = ()=>{
       const queue = generateProcesses(Number(numProcesses));
-      const pids = queue.items.map(p => 'PID: '+ p.pid); // Just used for x-labels
-      const values = queue.items.map(p => p);
-      setProcessQueue({pids, values});
+      setCurrentTime(0);
+      setProcessQueue(queue);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setCurrentTime(prevTime => prevTime + 1);
+
+        fifo(processQueue, currentTime); // This automatically updates the chart as well
+
+    }, 1000);
+
+    return () => clearInterval(interval);
+}, [processQueue, currentTime]);
+
 
   return (
     <div className="App">

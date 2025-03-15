@@ -7,11 +7,11 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const BarChart = ({data})=>{
     const chartData = {
-        labels: data.pids,
+        labels: data.items.map(p => 'PID: ' + p.pid),
         datasets: [
             {
-                label: 'Proceesses in Queue',
-                data: data.values.map(p => p.burstTime),
+                label: 'Processes in Queue',
+                data: data.items.map(p => p.burstTime),
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -25,7 +25,7 @@ const BarChart = ({data})=>{
         plugins: {
             title: {
                 display: true,
-                text: 'Processes in Queue',
+                //text: 'Processes in Queue',
             },
             tooltip:{
                 callbacks: {
@@ -48,6 +48,8 @@ const BarChart = ({data})=>{
                     display: true,
                     text: 'Burst Time (seconds)', // Y-axis label
                 },
+                min: 0,
+                max: 10,
             },
         },
     };
