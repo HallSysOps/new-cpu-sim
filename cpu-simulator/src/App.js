@@ -7,6 +7,7 @@ import BarChart from './components/currentQueue';
 import { fifo } from './algorithms/fifo';
 import { sjf } from './algorithms/sjf';
 import { updateArrivedQueue } from './algorithms/updateArrivedQueue';
+import {rr} from './algorithms/rr';
 
 
 function App() {
@@ -27,6 +28,8 @@ function App() {
      const [processQueue, setProcessQueue] = useState(new Queue());
      const [arrivedQueue, setArrivedQueue] = useState(new Queue());
      const [isRunning, setIsRunning] = useState(false);
+     const [timeSlice, setTimeSlice] = useState(3) // Default 3s timeSlice
+     const [currentTimeSlice, setCurrentTimeSlice] = useState(0);
 
      const handleGenerateProcesses = ()=>{
       const queue = generateProcesses(Number(numProcesses));
@@ -34,6 +37,7 @@ function App() {
       setProcessQueue(queue);
       setArrivedQueue(new Queue());
       setIsRunning(false);
+      setCurrentTimeSlice(0);
   };
   const handleStartSimulation = () => {
     setIsRunning(true);
@@ -42,10 +46,14 @@ function App() {
   useEffect(() => {
     if (!isRunning) return;
     const interval = setInterval(() => {
-        setCurrentTime(prevTime => prevTime + 1);
+        setCurrentTime((prevTime) => prevTime + 1);
         updateArrivedQueue(currentTime, processQueue, arrivedQueue);
-        // May need to create a queue that drops a process into an algo's queue when currentTime == arrivalTime
-        fifo(arrivedQueue, currentTime); // This automatically updates the chart as well
+        
+        //fifo(arrivedQueue); // This automatically updates the chart as well
+        //sjf(arrivedQueue);
+        const updateTimeSlice = rr(arrivedQueue, timeSlice, currentTimeSlice);
+        setCurrentTimeSlice(updateTimeSlice);
+
         //TODO: Implement other algos and test in here 
         //TODO: Find out a way to pass functions as an argument to allow a user to pick what algo they want to run
         //TODO: Implement method to run all functions at the same time
@@ -53,7 +61,7 @@ function App() {
     }, 1000);
 
     return () => clearInterval(interval);
-}, [isRunning, currentTime, processQueue, arrivedQueue]);
+}, [isRunning, currentTime, processQueue, arrivedQueue, timeSlice]);
 
 
   return (
@@ -67,6 +75,14 @@ function App() {
         onChange={(e) => setNumProcesses(e.target.value)}
         min="1"
       />
+      {/* Input field for time slice */}
+      <label>Time Slice:</label>
+      <input
+          type="number"
+          value={timeSlice}
+          onChange={(e) => setTimeSlice(Number(e.target.value))}
+          min="1"
+      />
       
       {/* Button to generate processes */}
       <button onClick={handleGenerateProcesses}>Generate Processes</button>
@@ -74,9 +90,12 @@ function App() {
       {/* Start Simulation button */}
       <button onClick={handleStartSimulation} disabled={isRunning}>Start Simulation</button>
 
+      {/* Charts */}
       <h2>Processes Waiting to Arrive</h2>
       <BarChart data={processQueue} />
 
+      {/* Display current time slice */}
+      <h2>Current Time Slice: {currentTimeSlice}</h2> {/* Show current time slice */}
       <h2>Processes in Job Scheduler</h2>
       <BarChart data={arrivedQueue} />
     </div>

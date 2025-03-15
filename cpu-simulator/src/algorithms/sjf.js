@@ -1,6 +1,6 @@
 import { Queue } from "../models/Process";
 
-export function sjf(queue, currentTime){
+export function sjf(queue){
     if (!queue.isEmpty()) {
         // Sort the queue based on burstTime (ascending order)
         queue.items.sort((a, b) => a.burstTime - b.burstTime);

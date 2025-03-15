@@ -1,4 +1,4 @@
-export function fifo(queue, currentTime){
+export function fifo(queue){
     if(!queue.isEmpty()){
         let process = queue.peek();
 
