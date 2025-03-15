@@ -21,15 +21,15 @@ function App() {
       */
      const [numProcesses, setNumProcesses] = useState(5); // Default 5 processes
      const [processQueue, setProcessQueue] = useState({
-      labels: [],
-      values: [],
+      pids: [],
+      values: []
      });
 
      const handleGenerateProcesses = ()=>{
       const queue = generateProcesses(Number(numProcesses));
-      const labels = queue.items.map(process => 'PID: ' + process.pid);
-      const values = queue.items.map(process => process.burstTime);
-      setProcessQueue({labels, values});
+      const pids = queue.items.map(p => 'PID: '+ p.pid); // Just used for x-labels
+      const values = queue.items.map(p => p);
+      setProcessQueue({pids, values});
   };
 
   return (
