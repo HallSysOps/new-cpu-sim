@@ -7,7 +7,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const BarChart = ({data})=>{
     const chartData = {
-        labels: data.items.map(p => 'PID: ' + p.pid),
+        labels: data.items.map(p => 'PID: ' + p.pid + ' | Arrival Time: ' + p.arrivalTime),
         datasets: [
             {
                 label: 'Processes in Queue',
@@ -30,7 +30,7 @@ const BarChart = ({data})=>{
             tooltip:{
                 callbacks: {
                     label: function (tooltipItem) {
-                        const process = data.values[tooltipItem.dataIndex]; // Get corresponding process
+                        const process = data.items[tooltipItem.dataIndex]; // Get corresponding process
                         return `PID: ${process.pid} | Arrival: ${process.arrivalTime}s | Burst: ${process.burstTime}s | Priority: ${process.priority}`;
                     },
                 },

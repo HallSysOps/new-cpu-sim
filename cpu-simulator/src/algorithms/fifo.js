@@ -1,5 +1,5 @@
 export function fifo(queue, currentTime){
-    if(!queue.isEmpty() && queue.peek().arrivalTime <= currentTime){
+    if(!queue.isEmpty()){
         let process = queue.peek();
 
         process.burstTime -= 1;
