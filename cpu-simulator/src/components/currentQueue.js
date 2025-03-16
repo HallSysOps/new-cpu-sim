@@ -7,11 +7,11 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const BarChart = ({data})=>{
     const chartData = {
-        labels: data.labels,
+        labels: data.items.map(p => 'PID: ' + p.pid + ' | Arrival Time: ' + p.arrivalTime),
         datasets: [
             {
-                label: 'Proceesses in Queue',
-                data: data.values,
+                label: 'Processes in Queue',
+                data: data.items.map(p => p.burstTime),
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -19,18 +19,19 @@ const BarChart = ({data})=>{
         ],
     };
 
+
     const options = {
         responsive: true,
         plugins: {
             title: {
                 display: true,
-                text: 'Processes in Queue',
+                //text: 'Processes in Queue',
             },
             tooltip:{
                 callbacks: {
-                    label: function (tooltipItem){
-                        const process = data.values[tooltipItem.dataIndex]; 
-                        return `PID: ${process.pid} | Arrival: ${process.arrivalTime}s | Burst: ${process.burstTime}s | Priority: ${process.priority}`; // TODO: Fix this, not showing the actual values
+                    label: function (tooltipItem) {
+                        const process = data.items[tooltipItem.dataIndex]; // Get corresponding process
+                        return `PID: ${process.pid} | Arrival: ${process.arrivalTime}s | Burst: ${process.burstTime}s | Priority: ${process.priority}`;
                     },
                 },
             },
@@ -47,6 +48,8 @@ const BarChart = ({data})=>{
                     display: true,
                     text: 'Burst Time (seconds)', // Y-axis label
                 },
+                min: 0,
+                max: 10,
             },
         },
     };
