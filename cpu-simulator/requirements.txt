@@ -3,7 +3,7 @@ Processes should be generated randomly
 
 User Should be able to: 
     set the number of processes and the time-quantum (for RR)
-    run each algorithm and see the results (Run only FIFO, SJF, etc.)
+    run each algorithm and see the results (Run only FIFO, SJF, STCF, RR, MLFQ)
     run all algorithms and see the results side by side
 
 Use Animation to show the progress of each algorithm

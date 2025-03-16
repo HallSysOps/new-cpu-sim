@@ -1,15 +1,18 @@
-import { Queue } from "../models/Process";
-
-export function sjf(queue){
+export function sjf(queue, isRunning){
     if (!queue.isEmpty()) {
-        // Sort the queue based on burstTime (ascending order)
-        queue.items.sort((a, b) => a.burstTime - b.burstTime);
+        if(!isRunning){
+            queue.items.sort((a, b) => a.burstTime - b.burstTime);
+            return true;
+        }
 
-        let process = queue.peek(); // Get process with shortest burst time
+        let process = queue.peek();
         process.burstTime -= 1;
 
-        if (process.burstTime === 0) {
-            queue.dequeue(); // Remove process when burst time reaches 0
+        if(process.burstTime === 0){
+            queue.dequeue();
+            return false;
         }
-    } 
+    }
+
+    return isRunning; 
 }

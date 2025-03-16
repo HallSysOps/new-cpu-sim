@@ -5,9 +5,10 @@ import {jsPDF} from "jspdf";
 import { generateProcesses, Queue } from './models/Process';
 import BarChart from './components/currentQueue';
 import { fifo } from './algorithms/fifo';
-import { sjf } from './algorithms/sjf';
+import { stcf } from './algorithms/stcf';
 import { updateArrivedQueue } from './algorithms/updateArrivedQueue';
 import {rr} from './algorithms/rr';
+import { sjf } from './algorithms/sjf';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
      const [isRunning, setIsRunning] = useState(false);
      const [timeSlice, setTimeSlice] = useState(3) // Default 3s timeSlice
      const [currentTimeSlice, setCurrentTimeSlice] = useState(0);
+     const [isRunningProc, setIsRunningProc] = useState(false); // Mainly used for sjf
 
      const handleGenerateProcesses = ()=>{
       const queue = generateProcesses(Number(numProcesses));
@@ -50,9 +52,14 @@ function App() {
         updateArrivedQueue(currentTime, processQueue, arrivedQueue);
         
         //fifo(arrivedQueue); // This automatically updates the chart as well
+
         //sjf(arrivedQueue);
-        const updateTimeSlice = rr(arrivedQueue, timeSlice, currentTimeSlice);
-        setCurrentTimeSlice(updateTimeSlice);
+
+        //const updateTimeSlice = rr(arrivedQueue, timeSlice, currentTimeSlice);
+        //setCurrentTimeSlice(updateTimeSlice);
+
+        //const updateProc = sjf(arrivedQueue, isRunningProc);
+        //setIsRunningProc(updateProc);
 
         //TODO: Implement other algos and test in here 
         //TODO: Find out a way to pass functions as an argument to allow a user to pick what algo they want to run
