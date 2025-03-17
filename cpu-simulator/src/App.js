@@ -30,8 +30,6 @@ function App() {
      const [arrivedQueue, setArrivedQueue] = useState(new Queue());
      const [isRunning, setIsRunning] = useState(false);
      const [timeSlice, setTimeSlice] = useState(3) // Default 3s timeSlice
-     const [currentTimeSlice, setCurrentTimeSlice] = useState(0);
-     const [isRunningProc, setIsRunningProc] = useState(false); // Used for sjf
      const [subS, setSubS] = useState(0);
      const [S, setS] = useState(3); // Default 3s Boost Interval
 
@@ -41,7 +39,6 @@ function App() {
       setProcessQueue(queue);
       setArrivedQueue(new Queue());
       setIsRunning(false);
-      setCurrentTimeSlice(0);
   };
   const handleStartSimulation = () => {
     setIsRunning(true);
@@ -55,12 +52,11 @@ function App() {
         
         //fifo(arrivedQueue); // This automatically updates the chart as well
 
+        //stcf(arrivedQueue);
+
+        //rr(arrivedQueue, timeSlice);
+
         //sjf(arrivedQueue);
-
-        rr(arrivedQueue, timeSlice);
-
-        //const updateProc = sjf(arrivedQueue, isRunningProc);
-        //setIsRunningProc(updateProc);
 
         //TODO: Implement other algos and test in here 
         //TODO: Find out a way to pass functions as an argument to allow a user to pick what algo they want to run
@@ -102,8 +98,6 @@ function App() {
           onChange={(e) => setTimeSlice(Number(e.target.value))}
           min="1"
       />
-      {/* Display current time slice */}
-      <h2>Current Time Slice: {currentTimeSlice}</h2> {/* Show current time slice */}
 
       <h2>Processes in Job Scheduler</h2>
       <BarChart data={arrivedQueue} />

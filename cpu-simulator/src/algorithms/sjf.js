@@ -1,18 +1,17 @@
-export function sjf(queue, isRunning){
+export function sjf(queue){
     if (!queue.isEmpty()) {
-        if(!isRunning){
+        let process = queue.peek();
+
+        if(!process.isExecuting){
             queue.items.sort((a, b) => a.burstTime - b.burstTime);
-            return true;
+            process = queue.peek();
+            process.isExecuting = true;
         }
 
-        let process = queue.peek();
         process.burstTime -= 1;
 
         if(process.burstTime === 0){
             queue.dequeue();
-            return false;
         }
     }
-
-    return isRunning; 
 }
