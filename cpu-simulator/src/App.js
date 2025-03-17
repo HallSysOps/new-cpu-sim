@@ -6,7 +6,7 @@ import { generateProcesses, Queue } from './models/Process';
 import BarChart from './components/currentQueue';
 import { fifo } from './algorithms/fifo';
 import { stcf } from './algorithms/stcf';
-import { updateArrivedQueue } from './algorithms/updateArrivedQueue';
+import { updateArrivedQueue, updateQueues } from './algorithms/updateArrivedQueue';
 import {rr} from './algorithms/rr';
 import { sjf } from './algorithms/sjf';
 import { mlfq } from './algorithms/mlfq';
@@ -36,6 +36,14 @@ function App() {
      const [S, setS] = useState(3); // Default 3s Boost Interval
      const [selectedAlgorithm, setSelectedAlgorithm] = useState('fifo');
 
+     // Independent arrivedQueues for each scheduler when Run All is selected
+      const [fifoQueue, setFifoQueue] = useState(new Queue());
+      const [stcfQueue, setStcfQueue] = useState(new Queue());
+      const [rrQueue, setRrQueue] = useState(new Queue());
+      const [sjfQueue, setSjfQueue] = useState(new Queue());
+      const [mlfqQueue, setMlfqQueue] = useState(new Queue());
+
+
      const handleGenerateProcesses = ()=>{
       const queue = generateProcesses(Number(numProcesses));
       setCurrentTime(0);
@@ -43,6 +51,12 @@ function App() {
       setArrivedQueue(new Queue());
       setIsRunning(false);
       setSubS(0);
+
+      setFifoQueue(new Queue());
+      setStcfQueue(new Queue());
+      setRrQueue(new Queue());
+      setSjfQueue(new Queue());
+      setMlfqQueue(new Queue());
   };
   const handleStartSimulation = () => {
     setIsRunning(true);
@@ -52,7 +66,7 @@ function App() {
     if (!isRunning) return;
     const interval = setInterval(() => {
         setCurrentTime((prevTime) => prevTime + 1);
-        updateArrivedQueue(currentTime, processQueue, arrivedQueue);
+        
         
         //fifo(arrivedQueue); // This automatically updates the chart as well
 
@@ -70,12 +84,21 @@ function App() {
         //TODO: Allow user to download results as a pdf(?) => get stats of completion, turnaround, etc?
         if (selectedAlgorithm === 'all') {
           // Run all algorithms with separate copies
-          fifo(new Queue(arrivedQueue.items));
-          stcf(new Queue(arrivedQueue.items));
-          rr(new Queue(arrivedQueue.items), timeQuantum);
-          sjf(new Queue(arrivedQueue.items));
-          setSubS(mlfq(new Queue(arrivedQueue.items), timeQuantum, timeAllotment, S, subS));
+
+          updateQueues(currentTime, processQueue, [fifoQueue, stcfQueue, rrQueue, sjfQueue, mlfqQueue]);
+          setFifoQueue(fifoQueue);
+          setStcfQueue(stcfQueue);
+          setRrQueue(rrQueue);
+          setSjfQueue(sjfQueue);
+          setMlfqQueue(mlfqQueue);
+
+          fifo(fifoQueue);
+          stcf(stcfQueue);
+          rr(rrQueue, timeQuantum);
+          sjf(sjfQueue);
+          setSubS(mlfq(mlfqQueue, timeQuantum, timeAllotment, S, subS));
         } else {
+          updateArrivedQueue(currentTime, processQueue, arrivedQueue);
           // Run only the selected algorithm
           if (selectedAlgorithm === 'fifo') fifo(arrivedQueue);
           else if (selectedAlgorithm === 'stcf') stcf(arrivedQueue);
@@ -109,8 +132,34 @@ function App() {
       <h2>Processes Waiting to Arrive</h2>
       <BarChart data={processQueue} />
 
-      <h2>Processes in Job Scheduler ({selectedAlgorithm.toUpperCase()})</h2>
-      <BarChart data={arrivedQueue} />
+      {selectedAlgorithm === 'all' ? (
+        <>
+          <h2>Processes in Job Scheduler (ALL Schedulers)</h2>
+          <div className="grid-container">
+            <div>
+              <h3>FIFO</h3>
+              <BarChart data={fifoQueue} />
+            </div>
+            <div>
+              <h3>STCF</h3>
+              <BarChart data={stcfQueue} />
+            </div>
+            <div>
+              <h3>Round Robin</h3>
+              <BarChart data={rrQueue} />
+            </div>
+            <div>
+              <h3>SJF</h3>
+              <BarChart data={sjfQueue} />
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <h2>Processes in Job Scheduler ({selectedAlgorithm.toUpperCase()})</h2>
+          <BarChart data={arrivedQueue} />
+        </>
+      )}
     </div>
   );
 }
