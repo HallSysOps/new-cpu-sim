@@ -126,6 +126,15 @@ function App() {
         <option value="all">Run All</option>
       </select>
 
+      {/* Input for number of processes */}
+      <label>Number of Processes:</label>
+      <input
+        type="number"
+        value={numProcesses}
+        onChange={(e) => setNumProcesses(e.target.value)}
+        min="1" // Ensure at least 1 process is generated
+      />
+
       {/* Show Quantum Time only if Round Robin or MLFQ is selected */}
       {(selectedAlgorithm === 'rr' || selectedAlgorithm === 'all') && (
         <>
