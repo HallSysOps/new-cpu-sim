@@ -2,8 +2,22 @@ class Process {
     constructor(pid, arrivalTime, burstTime, priority){
         this.pid = pid;
         this.arrivalTime = arrivalTime;
-        this.burstTime = burstTime;
+        this.burstTime = burstTime; // Requested Time (TIme to complete process)
         this.priority = priority;
+        this.isExecuting = false;
+        this.timeAllotment = 0; // Tracks how long the process has been running for in current time slice
+    }
+
+    reducePriority(){ // Used for MLFQ, reduce priority once time allotment is used
+        this.priority -= 1;
+        if (this.priority < 0) this.priority = 0;
+    }
+
+    resetProcess(){ // Used for MLFQ, reset process after a period, S
+        this.priority = 0;
+        this.executionTime = 0;
+        this.timeAllotment = 0;
+        this.isExecuting = false;
     }
 }
 

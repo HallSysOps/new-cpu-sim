@@ -31,7 +31,9 @@ function App() {
      const [isRunning, setIsRunning] = useState(false);
      const [timeSlice, setTimeSlice] = useState(3) // Default 3s timeSlice
      const [currentTimeSlice, setCurrentTimeSlice] = useState(0);
-     const [isRunningProc, setIsRunningProc] = useState(false); // Mainly used for sjf
+     const [isRunningProc, setIsRunningProc] = useState(false); // Used for sjf
+     const [subS, setSubS] = useState(0);
+     const [S, setS] = useState(3); // Default 3s Boost Interval
 
      const handleGenerateProcesses = ()=>{
       const queue = generateProcesses(Number(numProcesses));
@@ -55,8 +57,7 @@ function App() {
 
         //sjf(arrivedQueue);
 
-        //const updateTimeSlice = rr(arrivedQueue, timeSlice, currentTimeSlice);
-        //setCurrentTimeSlice(updateTimeSlice);
+        rr(arrivedQueue, timeSlice);
 
         //const updateProc = sjf(arrivedQueue, isRunningProc);
         //setIsRunningProc(updateProc);
@@ -82,14 +83,6 @@ function App() {
         onChange={(e) => setNumProcesses(e.target.value)}
         min="1"
       />
-      {/* Input field for time slice */}
-      <label>Time Slice:</label>
-      <input
-          type="number"
-          value={timeSlice}
-          onChange={(e) => setTimeSlice(Number(e.target.value))}
-          min="1"
-      />
       
       {/* Button to generate processes */}
       <button onClick={handleGenerateProcesses}>Generate Processes</button>
@@ -101,8 +94,17 @@ function App() {
       <h2>Processes Waiting to Arrive</h2>
       <BarChart data={processQueue} />
 
+      {/* Input field for time slice */}
+      <label>Time Slice:</label>
+      <input
+          type="number"
+          value={timeSlice}
+          onChange={(e) => setTimeSlice(Number(e.target.value))}
+          min="1"
+      />
       {/* Display current time slice */}
       <h2>Current Time Slice: {currentTimeSlice}</h2> {/* Show current time slice */}
+
       <h2>Processes in Job Scheduler</h2>
       <BarChart data={arrivedQueue} />
     </div>
