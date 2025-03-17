@@ -126,6 +126,30 @@ function App() {
         <option value="all">Run All</option>
       </select>
 
+      <label>Quantum Time:</label>
+      <input
+        type="number"
+        value={timeQuantum}
+        onChange={(e) => setTimeQuantum(Number(e.target.value))}
+        disabled={selectedAlgorithm !== 'rr' && selectedAlgorithm !== 'all'}
+      />
+
+      <label>Time Allotment:</label>
+      <input
+        type="number"
+        value={timeAllotment}
+        onChange={(e) => setTimeAllotment(Number(e.target.value))}
+        disabled={selectedAlgorithm !== 'mlfq' && selectedAlgorithm !== 'all'}
+      />
+
+      <label>Burst Interval, S:</label>
+      <input
+        type="number"
+        value={S}
+        onChange={(e) => setS(Number(e.target.value))}
+        disabled={selectedAlgorithm !== 'mlfq' && selectedAlgorithm !== 'all'}
+      />
+
       <button onClick={handleGenerateProcesses}>Generate Processes</button>
       <button onClick={handleStartSimulation} disabled={isRunning}>Start Simulation</button>
 
