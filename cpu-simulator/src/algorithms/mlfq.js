@@ -1,5 +1,4 @@
 import { Queue } from "../models/Process";
-import { rr } from "./rr";
 
 export function mlfq(queue, timeQuantum, timeAllotment, S, subS){
 
@@ -32,10 +31,20 @@ export function mlfq(queue, timeQuantum, timeAllotment, S, subS){
         }
 
         const highestPriority = process.priority; // Rule 1: Get highest priority
-        const filteredQueue = queue.filterByPriority(highestPriority); // Need to pass by ref
+        const rrQueue = new Queue();
+        const nonrrQueue = new Queue();
 
-        if(filteredQueue.items.length > 1){
-            rr(filteredQueue, timeQuantum); // Rule 2: Round Robin scheduling for processes with same priority
+        queue.items.forEach(p => {
+        if (p.priority === highestPriority) {
+            rrQueue.enqueue(p); // Pass by reference
+        } else {
+            nonRRQueue.enqueue(p);
+        }
+        });
+
+        if(rrQueue.items.length > 1){
+            roundRobin(rrQueue, timeQuantum); // Rule 2: Round Robin scheduling for processes with same priority
+            queue.items = [...rrQueue.items, ...nonrrQueue.items];
         }
         else{
             process.burstTime -= 1; // Rule 1: Run process with highest priority
@@ -45,5 +54,28 @@ export function mlfq(queue, timeQuantum, timeAllotment, S, subS){
             process.timeAllotment += 1;
         }
         return subS;
+    }
+}
+
+function roundRobin(queue, timeQuantum) {
+    if (!queue.isEmpty()) {
+        let process = queue.peek();
+
+        // If process has used full time slice, dequeue and enqueue it
+        if (process.timeAllotment >= timeQuantum) {
+            queue.dequeue();
+            if (process.burstTime > 0) {
+                queue.enqueue(process); // enqueue if process is not finished
+            }
+            process.timeAllotment = 0;
+        } else {
+            process.burstTime -= 1;
+
+            if (process.burstTime === 0) {
+                queue.dequeue();
+            }
+
+            process.timeAllotment += 1;
+        }
     }
 }

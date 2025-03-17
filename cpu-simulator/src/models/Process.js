@@ -26,7 +26,7 @@ function generateProcesses(n){
 
     for(let i = 0; i < n ; i++){
         const arrivalTime = generateRandomN(0, 0); // 0-10s arrival time
-        const burstTime = generateRandomN(2, 10); // 2-10s burst time
+        const burstTime = generateRandomN(5, 5); // 2-10s burst time
         const priority = 0; // Rule 3 from https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-multi.pdf: When job enters system, it is placed at highest priority
         
         const process = new Process(i, arrivalTime, burstTime, priority);
