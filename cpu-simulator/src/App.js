@@ -34,6 +34,7 @@ function App() {
      const [timeAllotment, setTimeAllotment] = useState(10) // Default 10s Time allotment before priority is reduced for MLFQ
      const [subS, setSubS] = useState(0);
      const [S, setS] = useState(3); // Default 3s Boost Interval
+     const [selectedAlgorithm, setSelectedAlgorithm] = useState('fifo');
 
      const handleGenerateProcesses = ()=>{
       const queue = generateProcesses(Number(numProcesses));
@@ -61,67 +62,54 @@ function App() {
 
         //sjf(arrivedQueue);
 
-        const updatedSubS = mlfq(arrivedQueue, timeQuantum, timeAllotment, S, subS);
-        setSubS(updatedSubS);
+        //const updatedSubS = mlfq(arrivedQueue, timeQuantum, timeAllotment, S, subS);
+        //setSubS(updatedSubS);
 
         //TODO: Implement other algos and test in here 
-        //TODO: Find out a way to pass functions as an argument to allow a user to pick what algo they want to run
         //TODO: Implement method to run all functions at the same time
         //TODO: Allow user to download results as a pdf(?) => get stats of completion, turnaround, etc?
+        if (selectedAlgorithm === 'all') {
+          // Run all algorithms with separate copies
+          fifo(new Queue(arrivedQueue.items));
+          stcf(new Queue(arrivedQueue.items));
+          rr(new Queue(arrivedQueue.items), timeQuantum);
+          sjf(new Queue(arrivedQueue.items));
+          setSubS(mlfq(new Queue(arrivedQueue.items), timeQuantum, timeAllotment, S, subS));
+        } else {
+          // Run only the selected algorithm
+          if (selectedAlgorithm === 'fifo') fifo(arrivedQueue);
+          else if (selectedAlgorithm === 'stcf') stcf(arrivedQueue);
+          else if (selectedAlgorithm === 'rr') rr(arrivedQueue, timeQuantum);
+          else if (selectedAlgorithm === 'sjf') sjf(arrivedQueue);
+          else if (selectedAlgorithm === 'mlfq') setSubS(mlfq(arrivedQueue, timeQuantum, timeAllotment, S, subS));
+        }
     }, 1000);
 
     return () => clearInterval(interval);
-}, [isRunning, currentTime, processQueue, arrivedQueue, timeQuantum]);
+}, [isRunning, currentTime, processQueue, timeQuantum, selectedAlgorithm]);
 
 
   return (
     <div className="App">
       <h1>Process Scheduler</h1>
-      
-      {/* Input field for number of processes */}
-      <input
-        type="number"
-        value={numProcesses}
-        onChange={(e) => setNumProcesses(e.target.value)}
-        min="1"
-      />
-      
-      {/* Button to generate processes */}
-      <button onClick={handleGenerateProcesses}>Generate Processes</button>
 
-      {/* Start Simulation button */}
+      <label>Select Algorithm:</label>
+      <select value={selectedAlgorithm} onChange={(e) => setSelectedAlgorithm(e.target.value)}>
+        <option value="fifo">FIFO</option>
+        <option value="stcf">STCF</option>
+        <option value="rr">Round Robin</option>
+        <option value="sjf">SJF</option>
+        <option value="mlfq">MLFQ</option>
+        <option value="all">Run All</option>
+      </select>
+
+      <button onClick={handleGenerateProcesses}>Generate Processes</button>
       <button onClick={handleStartSimulation} disabled={isRunning}>Start Simulation</button>
 
-      {/* Charts */}
       <h2>Processes Waiting to Arrive</h2>
       <BarChart data={processQueue} />
 
-      {/* Input field for time-quantum */}
-      <label>Time-Quantum:</label>
-      <input
-          type="number"
-          value={timeQuantum}
-          onChange={(e) => setTimeQuantum(Number(e.target.value))}
-          min="1"
-      />
-      {/* Input field for time allotment */}
-      <label>Time Allotment:</label>
-      <input
-          type="number"
-          value={timeAllotment}
-          onChange={(e) => setTimeAllotment(Number(e.target.value))}
-          min="1"
-      />
-      {/* Input field for time-quantum */}
-      <label>Boost Interval (S):</label>
-      <input
-          type="number"
-          value={S}
-          onChange={(e) => setS(Number(e.target.value))}
-          min="1"
-      />
-
-      <h2>Processes in Job Scheduler</h2>
+      <h2>Processes in Job Scheduler ({selectedAlgorithm.toUpperCase()})</h2>
       <BarChart data={arrivedQueue} />
     </div>
   );
