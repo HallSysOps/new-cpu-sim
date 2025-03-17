@@ -38,7 +38,7 @@ export function mlfq(queue, timeQuantum, timeAllotment, S, subS){
         if (p.priority === highestPriority) {
             rrQueue.enqueue(p); // Pass by reference
         } else {
-            nonRRQueue.enqueue(p);
+            nonrrQueue.enqueue(p);
         }
         });
 
