@@ -15,7 +15,6 @@ class Process {
 
     resetProcess(){ // Used for MLFQ, reset process after a period, S
         this.priority = 0;
-        this.executionTime = 0;
         this.timeAllotment = 0;
         this.isExecuting = false;
     }
@@ -26,7 +25,7 @@ function generateProcesses(n){
     const processes = [];
 
     for(let i = 0; i < n ; i++){
-        const arrivalTime = generateRandomN(0, 5); // 0-10s arrival time
+        const arrivalTime = generateRandomN(0, 0); // 0-10s arrival time
         const burstTime = generateRandomN(2, 10); // 2-10s burst time
         const priority = 0; // Rule 3 from https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-multi.pdf: When job enters system, it is placed at highest priority
         

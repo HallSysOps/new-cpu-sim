@@ -1,9 +1,9 @@
-export function rr(queue, timeSlice) {
+export function rr(queue, timeQuantum) {
     if (!queue.isEmpty()) {
         let process = queue.peek();
 
         // If process has used full time slice, dequeue and enqueue it
-        if (process.timeAllotment >= timeSlice) {
+        if (process.timeAllotment >= timeQuantum) {
             queue.dequeue();
             if (process.burstTime > 0) {
                 queue.enqueue(process); // enqueue if process is not finished
