@@ -1,6 +1,6 @@
 import { Queue } from "../models/Process";
 
-export function mlfq(queue, timeQuantum, timeAllotment, S, subS){
+export function mlfq(queue, timeQuantum, timeAllotment, S, subS, currentTime){
 
     // Rule 1. Priority(A) > Priority(B) = Run(A)
     // Rule 2. If Priority(A) = Priority(B) = RunRoundRobin(A,B)
@@ -33,6 +33,8 @@ export function mlfq(queue, timeQuantum, timeAllotment, S, subS){
         const highestPriority = process.priority; // Rule 1: Get highest priority
         const rrQueue = new Queue();
         const nonrrQueue = new Queue();
+
+        process.currentTime = currentTime;
 
         queue.items.forEach(p => {
         if (p.priority === highestPriority) {

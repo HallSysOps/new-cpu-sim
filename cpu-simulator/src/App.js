@@ -92,19 +92,19 @@ function App() {
           setSjfQueue(sjfQueue);
           setMlfqQueue(mlfqQueue);
 
-          fifo(fifoQueue);
-          stcf(stcfQueue);
-          rr(rrQueue, timeQuantum);
-          sjf(sjfQueue);
-          setSubS(mlfq(mlfqQueue, timeQuantum, timeAllotment, S, subS));
+          fifo(fifoQueue, currentTime);
+          stcf(stcfQueue, currentTime);
+          rr(rrQueue, timeQuantum, currentTime);
+          sjf(sjfQueue, currentTime);
+          setSubS(mlfq(mlfqQueue, timeQuantum, timeAllotment, S, subS, currentTime));
         } else {
           updateArrivedQueue(currentTime, processQueue, arrivedQueue);
           // Run only the selected algorithm
-          if (selectedAlgorithm === 'fifo') fifo(arrivedQueue);
-          else if (selectedAlgorithm === 'stcf') stcf(arrivedQueue);
-          else if (selectedAlgorithm === 'rr') rr(arrivedQueue, timeQuantum);
-          else if (selectedAlgorithm === 'sjf') sjf(arrivedQueue);
-          else if (selectedAlgorithm === 'mlfq') setSubS(mlfq(arrivedQueue, timeQuantum, timeAllotment, S, subS));
+          if (selectedAlgorithm === 'fifo') fifo(arrivedQueue, currentTime);
+          else if (selectedAlgorithm === 'stcf') stcf(arrivedQueue, currentTime);
+          else if (selectedAlgorithm === 'rr') rr(arrivedQueue, timeQuantum, currentTime);
+          else if (selectedAlgorithm === 'sjf') sjf(arrivedQueue, currentTime);
+          else if (selectedAlgorithm === 'mlfq') setSubS(mlfq(arrivedQueue, timeQuantum, timeAllotment, S, subS, currentTime));
         }
     }, 1000);
 

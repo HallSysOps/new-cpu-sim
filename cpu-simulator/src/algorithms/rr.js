@@ -1,6 +1,7 @@
-export function rr(queue, timeQuantum) {
+export function rr(queue, timeQuantum, currentTime) {
     if (!queue.isEmpty()) {
         let process = queue.peek();
+        process.currentTime = currentTime;
 
         // If process has used full time slice, dequeue and enqueue it
         if (process.timeAllotment >= timeQuantum) {

@@ -1,6 +1,7 @@
-export function fifo(queue){
+export function fifo(queue, currentTime){
     if(!queue.isEmpty()){
         let process = queue.peek();
+        process.currentTime = currentTime;
 
         process.burstTime -= 1;
 

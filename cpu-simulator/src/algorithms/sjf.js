@@ -1,6 +1,7 @@
-export function sjf(queue){
+export function sjf(queue, currentTime){
     if (!queue.isEmpty()) {
         let process = queue.peek();
+        process.currentTime = currentTime;
 
         if(!process.isExecuting){
             queue.items.sort((a, b) => a.burstTime - b.burstTime);
