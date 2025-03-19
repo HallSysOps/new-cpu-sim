@@ -107,6 +107,15 @@ class Queue{
         const sum = this.completedProcesses.reduce((acc, p) => acc + p.getResponseTime(), 0);
         return sum / this.completedProcesses.length;
     }
+
+    getStats(){
+        if (this.completedProcesses.length === 0) return null;
+        return{
+            avgTurnAroundTime: this.getAvgTurnaroundTime().toFixed(2),
+            avgResponseTime: this.getAvgResponseTime().toFixed(2),
+            totalProcesses: this.completedProcesses.length
+        };
+    }
 }
 
 export {generateProcesses, Queue, Process};

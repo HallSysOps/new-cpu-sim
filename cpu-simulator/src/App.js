@@ -58,8 +58,21 @@ function App() {
       setSjfQueue(new Queue());
       setMlfqQueue(new Queue());
   };
+
   const handleStartSimulation = () => {
     setIsRunning(true);
+  };
+
+  const renderStats = (stats) => {
+    if(!stats) return null;
+    return (
+      <div>
+        <h3>Simulation Statistics</h3>
+          <p>Average Turnaround Time: {stats.avgTurnAroundTime} seconds</p>
+          <p>Average Response Time: {stats.avgResponseTime} seconds</p>
+          <p>Total Processes Completed: {stats.totalProcesses}</p>
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -181,18 +194,26 @@ function App() {
             <div>
               <h3>FIFO</h3>
               <BarChart data={fifoQueue} />
+              {/* Display Stats */}
+              {fifoQueue.items.length === 0 && (renderStats(fifoQueue.getStats()))}
             </div>
             <div>
               <h3>STCF</h3>
               <BarChart data={stcfQueue} />
+              {/* Display Stats */}
+              {stcfQueue.items.length === 0 && (renderStats(stcfQueue.getStats()))}
             </div>
             <div>
               <h3>Round Robin</h3>
               <BarChart data={rrQueue} />
+              {/* Display Stats */}
+              {rrQueue.items.length === 0 && (renderStats(rrQueue.getStats()))}
             </div>
             <div>
               <h3>SJF</h3>
               <BarChart data={sjfQueue} />
+              {/* Display Stats */}
+              {sjfQueue.items.length === 0 && (renderStats(sjfQueue.getStats()))}
             </div>
           </div>
         </>
@@ -200,6 +221,9 @@ function App() {
         <>
           <h2>Processes in Job Scheduler ({selectedAlgorithm.toUpperCase()})</h2>
           <BarChart data={arrivedQueue} />
+
+          {/* Display Stats */}
+          {arrivedQueue.items.length === 0 && (renderStats(arrivedQueue.getStats()))}
         </>
       )}
     </div>

@@ -5,11 +5,12 @@ export function rr(queue, timeQuantum, currentTime) {
 
         // If process has used full time slice, dequeue and enqueue it
         if (process.timeAllotment >= timeQuantum) {
-            queue.dequeue();
+            queue.items.shift(); //queue.dequeue();
             if (process.burstTime > 0) {
                 queue.enqueue(process); // enqueue if process is not finished
             }
             process.timeAllotment = 0;
+            queue.peek().burstTime -= 1;
         } else {
             process.burstTime -= 1;
 
