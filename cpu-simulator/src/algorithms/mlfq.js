@@ -1,4 +1,5 @@
 import { Queue } from "../models/Process";
+import {rr} from "./rr";
 
 export function mlfq(queue, timeQuantum, timeAllotment, S, subS, currentTime){
 
@@ -31,45 +32,51 @@ export function mlfq(queue, timeQuantum, timeAllotment, S, subS, currentTime){
         }
 
         const highestPriority = process.priority; // Rule 1: Get highest priority
-        const rrQueue = new Queue();
-        const nonrrQueue = new Queue();
+        let a = 0, b = 0;
+
+        while (b < queue.items.length && queue.items[b].priority === highestPriority) {
+            b++;
+        }
 
         process.currentTime = currentTime;
 
-        queue.items.forEach(p => {
-        if (p.priority === highestPriority) {
-            rrQueue.enqueue(p); // Pass by reference
-        } else {
-            nonrrQueue.enqueue(p);
-        }
-        });
-
-        if(rrQueue.items.length > 1){
-            roundRobin(rrQueue, timeQuantum); // Rule 2: Round Robin scheduling for processes with same priority
-            queue.items = [...rrQueue.items, ...nonrrQueue.items];
+        if(b - a > 1){
+            rr(queue, timeQuantum, currentTime); // Rule 2: Round Robin scheduling for processes with same priority => BROKEN
+            //queue.items = [...rrQueue.items, ...nonrrQueue.items];
         }
         else{
             process.burstTime -= 1; // Rule 1: Run process with highest priority
+            process.timeAllotment += 1;
+
             if(process.burstTime === 0){
                 queue.dequeue();
             }
-            process.timeAllotment += 1;
         }
         return subS;
     }
 }
 
-function roundRobin(queue, timeQuantum) {
-    if (!queue.isEmpty()) {
-        let process = queue.peek();
+function roundRobin(queue, timeQuantum, currentTime, a, b) {
+    if (a < b) {
+        let process = queue.items[a]; 
+        process.currentTime = currentTime;
 
         // If process has used full time slice, dequeue and enqueue it
         if (process.timeAllotment >= timeQuantum) {
-            queue.dequeue();
+            queue.items.splice(0, 1); // Remove the first process
+            queue.items.splice(b - 1, 0, process); // Insert element at position b
             if (process.burstTime > 0) {
-                queue.enqueue(process); // enqueue if process is not finished
+                queue.items[b] = process; // enqueue if process is not finished, place at position b
             }
             process.timeAllotment = 0;
+            
+            process = queue.items[a];
+            process.burstTime -= 1;
+            process.timeAllotment += 1;
+
+            if (process.burstTime === 0) {
+                queue.dequeue();
+            }
         } else {
             process.burstTime -= 1;
 

@@ -13,18 +13,6 @@ import { mlfq } from './algorithms/mlfq';
 
 
 function App() {
-  /*
-  const handleDownloadPDF = () => {
-    // Get the canvas element (assuming Chart.js renders it with a ref)
-    const canvas = document.querySelector('canvas'); // Modify this to match your chart
-    if (canvas) {
-      const imgData = canvas.toDataURL('image/png'); // Convert the canvas to a base64 PNG image
-
-      const doc = new jsPDF();
-      doc.addImage(imgData, 'PNG', 10, 10, 180, 160); // Adjust the dimensions (10, 10, 180, 160) as needed
-      doc.save('chart.pdf'); // Save the PDF with the name 'chart.pdf'
-    }
-      */
      const [currentTime, setCurrentTime] = useState(0); // Used to track time once processes have been generated
      const [numProcesses, setNumProcesses] = useState(5); // Default 5 processes
      const [processQueue, setProcessQueue] = useState(new Queue());
@@ -67,13 +55,68 @@ function App() {
     if(!stats) return null;
     return (
       <div>
-        <h3>Simulation Statistics</h3>
+        <h3>Simulation Results</h3>
           <p>Average Turnaround Time: {stats.avgTurnAroundTime} seconds</p>
           <p>Average Response Time: {stats.avgResponseTime} seconds</p>
           <p>Total Processes Completed: {stats.totalProcesses}</p>
       </div>
     );
   };
+  const handleDownloadPDF = () => {
+    const stats = arrivedQueue.getStats();
+    if(!stats) return null;
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(`${selectedAlgorithm.toUpperCase()} Results`, 10, 10);
+
+    doc.setFontSize(12);
+    doc.text(`Average Turnaround Time: ${stats.avgTurnAroundTime} seconds`, 10, 30);
+    doc.text(`Average Response Time: ${stats.avgResponseTime} seconds`, 10, 40);
+    doc.text(`Total Processes Completed: ${stats.totalProcesses}`, 10, 50);
+
+    // ✅ Save as PDF
+    doc.save("scheduler_results.pdf");
+   };
+
+   const handleDownloadAllPDF = (stats) => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("Results from all Job Schedulers", 10, 10);
+
+    // Function to add stats to PDF
+    const addStatsToPDF = (title, stats, yPosition) => {
+      doc.setFontSize(14);
+      doc.text(title, 10, yPosition);
+      doc.setFontSize(12);
+      doc.text(`Average Turnaround Time: ${stats.avgTurnAroundTime} seconds`, 10, yPosition + 10);
+      doc.text(`Average Response Time: ${stats.avgResponseTime} seconds`, 10, yPosition + 20);
+      doc.text(`Total Processes Completed: ${stats.totalProcesses}`, 10, yPosition + 30);
+  };
+
+  let y = 30; // Initial Y position
+
+  addStatsToPDF("FIFO Scheduler", stats.fifo, y);
+  y += 50;
+  addStatsToPDF("STCF Scheduler", stats.stcf, y);
+  y += 50;
+  addStatsToPDF("Round Robin Scheduler", stats.rr, y);
+  y += 50;
+  addStatsToPDF("SJF Scheduler", stats.sjf, y);
+  y += 50;
+  addStatsToPDF("MLFQ Scheduler", stats.mlfq, y);
+
+  doc.save("all_scheduler_stats.pdf");
+   };
+   const allStatsAvailable = () =>{
+    return (
+      fifoQueue.items.length === 0 && fifoQueue.getStats() &&
+      stcfQueue.items.length === 0 && stcfQueue.getStats() &&
+      rrQueue.items.length === 0 && rrQueue.getStats() &&
+      sjfQueue.items.length === 0 && sjfQueue.getStats() &&
+      mlfqQueue.items.length === 0 && mlfqQueue.getStats() 
+    )
+   };
 
   useEffect(() => {
     if (!isRunning) return;
@@ -161,7 +204,7 @@ function App() {
       )}
 
       {/* Show Time Allotment and S only if MLFQ is selected */}
-      {selectedAlgorithm === 'mlfq' || selectedAlgorithm === 'all' ? (
+      {selectedAlgorithm === 'mlfq' ? (
         <>
           <label>Time Allotment:</label>
           <input
@@ -170,14 +213,36 @@ function App() {
             onChange={(e) => setTimeAllotment(Number(e.target.value))}
           />
 
-          <label>S:</label>
+          <label>Burst Time, S:</label>
           <input
             type="number"
             value={S}
             onChange={(e) => setS(Number(e.target.value))}
           />
+          <label>Quantum Time:</label>
+          <input
+            type="number"
+            value={timeQuantum}
+            onChange={(e) => setTimeQuantum(Number(e.target.value))}
+          />
         </>
-      ) : null}
+      ) : selectedAlgorithm === 'all'? (
+        <>
+        <label>Time Allotment:</label>
+        <input
+          type="number"
+          value={timeAllotment}
+          onChange={(e) => setTimeAllotment(Number(e.target.value))}
+        />
+
+        <label>Burst Time, S:</label>
+        <input
+          type="number"
+          value={S}
+          onChange={(e) => setS(Number(e.target.value))}
+        />
+      </>
+      ): null}
 
       <button onClick={handleGenerateProcesses}>Generate Processes</button>
       <button onClick={handleStartSimulation} disabled={isRunning}>
@@ -215,7 +280,24 @@ function App() {
               {/* Display Stats */}
               {sjfQueue.items.length === 0 && (renderStats(sjfQueue.getStats()))}
             </div>
+            <div>
+              <h3>MLFQ</h3>
+              <BarChart data={mlfqQueue} />
+              {/* Display Stats */}
+              {mlfqQueue.items.length === 0 && (renderStats(mlfqQueue.getStats()))}
+            </div>
           </div>
+          {allStatsAvailable() && (
+            <button onClick={() => handleDownloadAllPDF({
+        fifo: fifoQueue.getStats(),
+        stcf: stcfQueue.getStats(),
+        rr: rrQueue.getStats(),
+        sjf: sjfQueue.getStats(),
+        mlfq: mlfqQueue.getStats(),
+    })}>
+        Download All Results as PDF
+    </button>
+          )}
         </>
       ) : (
         <>
@@ -223,7 +305,12 @@ function App() {
           <BarChart data={arrivedQueue} />
 
           {/* Display Stats */}
-          {arrivedQueue.items.length === 0 && (renderStats(arrivedQueue.getStats()))}
+          {arrivedQueue.items.length === 0 && (
+            <>
+            {renderStats(arrivedQueue.getStats())}
+            <button onClick={handleDownloadPDF}>Download Results as PDF</button>
+            </>
+            )}
         </>
       )}
     </div>

@@ -10,7 +10,14 @@ export function rr(queue, timeQuantum, currentTime) {
                 queue.enqueue(process); // enqueue if process is not finished
             }
             process.timeAllotment = 0;
-            queue.peek().burstTime -= 1;
+            
+            process = queue.peek();
+            process.burstTime -= 1;
+            process.timeAllotment += 1;
+
+            if (process.burstTime === 0) {
+                queue.dequeue();
+            }
         } else {
             process.burstTime -= 1;
 

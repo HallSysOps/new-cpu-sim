@@ -13,7 +13,7 @@ class Process {
     }
 
     reducePriority(){ // Used for MLFQ, reduce priority once time allotment is used
-        this.priority -= 1;
+        this.priority += 1;
         if (this.priority < 0) this.priority = 0;
     }
 
